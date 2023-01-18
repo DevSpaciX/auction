@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <title>Title</title>
+</head>
+<body>
+  <div class="row">
+    <div class="col-md-2">
+      <div class="list-group" style="margin: 20px">
+        <li class="list-group-item">Your balance : {{ user.money }} $</li>
+        <a href="{% url "auction:list-auctions" %}" class="list-group-item list-group-item-action ">
+          All active auctions
+        </a>
+        <a href="{% url "auction:create-auctions" %}" class="list-group-item list-group-item-action">Create auction</a>
+        <a href="{% url "auction:profile" %}" class="list-group-item list-group-item-action">Profile</a>
+      </div>
+    </div>
+    {% if user.is_authenticated %}
+    {% block content %}
+
+    <div class="auction-card">
+      {% for auction in auction_list %}
+      <div class="card" style="width: 18rem;margin-left: 10px">
+        <img class="card-img-top" style="height:200px " src="{{ auction.image.url }}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">{{ auction.title }}</h5>
+          <p class="card-text"> Actual price: {{ auction.actual_price }} USD</p>
+          <p class="card-text">{{ auction.description }}</p>
+          <p class="card-text">Creator : {{ auction.owner }}</p>
+          <p class="card-text">Offered the most : {{ auction.offered_the_most }}</p>
+          {% if user.money < auction.actual_price %}
+            <a href="#" class="btn btn-danger disabled">Less money</a>
+          {% elif user.username == auction.owner.username %}
+            <a class="btn btn-danger" href="{% url "auction:delete-auctions" pk=auction.pk %}" role="button">Cancel</a>
+          {% else %}
+            <a class="btn btn-success" href="{% url "auction:detail-auctions" pk=auction.pk %}" role="button">Participate</a>
+          {% endif %}
+
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    {% endblock %}
+  {% else %}
+  <h1>Login first</h1>
+  {% endif %}
+  </div>
+</body>
+</html>

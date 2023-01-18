@@ -1,0 +1,18 @@
+{% extends "auction/base.html" %}
+
+{% block content %}
+  <ul>
+    <li>
+      <h5 style="margin-top: 20px">Name: {{ user.username }}</h5>
+    </li>
+    <li>
+      {% if user.won_item_title %}
+    <h6>Your items to claim: {{ user.won_item_title }}</h6>
+        <h6>Text to {{ user.owner_to_chat_with }} for get a prize</h6>
+      {% endif %}
+    </li>
+  </ul>
+
+
+
+{% endblock %}
